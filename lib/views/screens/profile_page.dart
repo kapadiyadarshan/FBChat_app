@@ -79,7 +79,7 @@ class ProfilePage extends StatelessWidget {
                                   color: Colors.black54,
                                 ),
                                 title: const Text(
-                                  "Enter yor name",
+                                  "Enter your name",
                                   textAlign: TextAlign.center,
                                 ),
                                 content: TextFormField(

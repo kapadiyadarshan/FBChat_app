@@ -10,6 +10,7 @@ import 'package:new_chat_app/helpers/firestore_helper.dart';
 import 'package:new_chat_app/modals/chat_Modal.dart';
 import 'package:new_chat_app/modals/user_Modal.dart';
 import 'package:new_chat_app/utils/colors.util.dart';
+import 'package:new_chat_app/views/components/time_component.dart';
 import 'package:share_extend/share_extend.dart';
 
 class ChatPage extends StatelessWidget {
@@ -139,6 +140,7 @@ class ChatPage extends StatelessWidget {
                                       .then(
                                         (value) => Navigator.pop(context),
                                       );
+                                  Navigator.pop(context);
                                 },
                                 child: const Text("Delete for everyone"),
                               ),
@@ -154,6 +156,7 @@ class ChatPage extends StatelessWidget {
                                       .then(
                                         (value) => Navigator.pop(context),
                                       );
+                                  Navigator.pop(context);
                                 },
                                 child: const Text("Delete for me"),
                               ),
@@ -194,40 +197,56 @@ class ChatPage extends StatelessWidget {
         backgroundColor: MyColor.color1,
         foregroundColor: MyColor.color3,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: StreamBuilder(
-                stream: FireStoreHelper.fireStoreHelper.getChats(
-                    senderEmail: senderEmail.toString(),
-                    receiverEmail: userModal.email),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    QuerySnapshot<Map<String, dynamic>>? snaps = snapshot.data;
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage(
+                'https://i.pinimg.com/564x/e0/0b/9a/e00b9a6bce8958583185fd2b49dd6c74.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: StreamBuilder(
+                  stream: FireStoreHelper.fireStoreHelper.getChats(
+                      senderEmail: senderEmail.toString(),
+                      receiverEmail: userModal.email),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      QuerySnapshot<Map<String, dynamic>>? snaps =
+                          snapshot.data;
 
-                    List<QueryDocumentSnapshot> docs = snaps!.docs;
+                      List<QueryDocumentSnapshot> docs = snaps!.docs;
 
-                    List<Map> data = docs.map((e) => e.data() as Map).toList();
+                      List<Map> data =
+                          docs.map((e) => e.data() as Map).toList();
 
-                    allChats = data
-                        .map(
-                          (e) => ChatModal.fromMap(data: e),
-                        )
-                        .toList();
+                      allChats = data
+                          .map(
+                            (e) => ChatModal.fromMap(data: e),
+                          )
+                          .toList();
 
-                    return (allChats.isNotEmpty)
-                        ? ListView.builder(
-                            itemCount: allChats.length,
-                            itemBuilder: (context, index) {
-                              ChatModal chat = allChats[index];
+                      return (allChats.isNotEmpty)
+                          ? ListView.builder(
+                              itemCount: allChats.length,
+                              itemBuilder: (context, index) {
+                                ChatModal chat = allChats[index];
 
-                              return Obx(() => Container(
-                                    color: (msgFun.msgFun.value &&
-                                            (index == msgFun.msgIndex.value))
-                                        ? Colors.black12
-                                        : MyColor.color3,
+                                return Obx(
+                                  () => Container(
+                                    decoration: BoxDecoration(
+                                      color: (msgFun.msgFun.value &&
+                                              (index == msgFun.msgIndex.value))
+                                          ? Colors.black12
+                                          : Colors.transparent,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
                                     child: Row(
                                       mainAxisAlignment: (chat.type == "sent")
                                           ? MainAxisAlignment.end
@@ -274,105 +293,139 @@ class ChatPage extends StatelessWidget {
                                                           Radius.circular(16),
                                                     ),
                                             ),
-                                            child: Text(
-                                              chat.msg,
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w500,
-                                                color: (chat.type == "sent")
-                                                    ? MyColor.color2
-                                                    : Colors.black,
-                                              ),
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                Text(
+                                                  chat.msg,
+                                                  style: (chat.msg ==
+                                                          "This message was deleted")
+                                                      ? TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: (chat.type ==
+                                                                  "sent")
+                                                              ? Colors.white54
+                                                              : Colors.black38,
+                                                        )
+                                                      : TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: (chat.type ==
+                                                                  "sent")
+                                                              ? MyColor.color2
+                                                              : Colors.black,
+                                                        ),
+                                                ),
+                                                const Gap(8),
+                                                TimeWidget(
+                                                  time: chat.time,
+                                                  type: chat.type,
+                                                ),
+                                                const Gap(4),
+                                                (chat.type == "sent")
+                                                    ? Icon(
+                                                        Icons.done_all,
+                                                        size: 16,
+                                                        color: MyColor.color3,
+                                                      )
+                                                    : Container(),
+                                              ],
                                             ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ));
-                            },
-                          )
-                        : Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  "asset/images/mail.png",
-                                  scale: 10,
-                                ),
-                                const Text(
-                                  "No messages here yet...",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
                                   ),
-                                ),
-                                const Gap(12),
-                                const Text(
-                                  "Send a message or tap the greeting\nbelow.",
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
-                          );
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
+                                );
+                              },
+                            )
+                          : Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    "asset/images/mail.png",
+                                    scale: 10,
+                                  ),
+                                  const Text(
+                                    "No messages here yet...",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const Gap(12),
+                                  const Text(
+                                    "Send a message or tap the greeting\nbelow.",
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(4),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+              ),
+              child: TextFormField(
+                controller: msgController,
+                onTapOutside: (event) {
+                  FocusManager.instance.primaryFocus!.unfocus();
                 },
+                onFieldSubmitted: (value) {
+                  ChatModal chatModal = ChatModal(
+                    msg: value,
+                    time: DateTime.now(),
+                    type: "sender",
+                    status: "unseen",
+                  );
+
+                  FireStoreHelper.fireStoreHelper.sendMsg(
+                    chatModal: chatModal,
+                    senderEmail: senderEmail.toString(),
+                    receiverEmail: userModal.email,
+                  );
+
+                  FireStoreHelper.fireStoreHelper.setLastMsg(
+                    chatModal: chatModal,
+                    senderEmail: senderEmail.toString(),
+                    receiverEmail: userModal.email,
+                  );
+
+                  msgController.clear();
+                },
+                decoration: const InputDecoration(
+                  isDense: true,
+                  hintText: "Message",
+                  hintStyle: TextStyle(
+                    fontSize: 16,
+                  ),
+                  prefixIcon: Icon(
+                    Icons.emoji_emotions_outlined,
+                    size: 24,
+                  ),
+                  suffixIcon: Icon(
+                    Icons.send,
+                    size: 24,
+                  ),
+                  border: InputBorder.none,
+                ),
               ),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(4),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-            ),
-            child: TextFormField(
-              controller: msgController,
-              onTapOutside: (event) {
-                FocusManager.instance.primaryFocus!.unfocus();
-              },
-              onFieldSubmitted: (value) {
-                ChatModal chatModal = ChatModal(
-                  msg: value,
-                  time: DateTime.now(),
-                  type: "sender",
-                  status: "unseen",
-                );
-
-                FireStoreHelper.fireStoreHelper.sendMsg(
-                  chatModal: chatModal,
-                  senderEmail: senderEmail.toString(),
-                  receiverEmail: userModal.email,
-                );
-
-                FireStoreHelper.fireStoreHelper.setLastMsg(
-                  chatModal: chatModal,
-                  senderEmail: senderEmail.toString(),
-                  receiverEmail: userModal.email,
-                );
-
-                msgController.clear();
-              },
-              decoration: const InputDecoration(
-                isDense: true,
-                hintText: "Message",
-                hintStyle: TextStyle(
-                  fontSize: 16,
-                ),
-                prefixIcon: Icon(
-                  Icons.emoji_emotions_outlined,
-                  size: 24,
-                ),
-                suffixIcon: Icon(
-                  Icons.send,
-                  size: 24,
-                ),
-                border: InputBorder.none,
-              ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
       backgroundColor: MyColor.color3,
     );

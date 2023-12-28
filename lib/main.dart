@@ -8,6 +8,7 @@ import 'package:new_chat_app/views/screens/home_page.dart';
 import 'package:new_chat_app/views/screens/login_page.dart';
 import 'package:new_chat_app/views/screens/profile_page.dart';
 import 'package:new_chat_app/views/screens/signup_page.dart';
+import 'package:new_chat_app/views/screens/splash_screen.dart';
 
 import 'firebase_options.dart';
 
@@ -36,10 +37,12 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light,
         ),
       ),
-      initialRoute: (AuthHelper.authHelper.firebaseAuth.currentUser == null)
-          ? MyRoute.LoginPage
-          : MyRoute.HomePage,
+      // initialRoute: (AuthHelper.authHelper.firebaseAuth.currentUser == null)
+      //     ? MyRoute.LoginPage
+      //     : MyRoute.HomePage,
+      initialRoute: MyRoute.SplashScreen,
       routes: {
+        MyRoute.SplashScreen: (context) => const SplashScreen(),
         MyRoute.LoginPage: (context) => LoginPage(),
         MyRoute.SignUpPage: (context) => SignUpPage(),
         MyRoute.HomePage: (context) => const HomePage(),

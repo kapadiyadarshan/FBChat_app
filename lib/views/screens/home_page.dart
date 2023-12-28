@@ -9,14 +9,13 @@ import 'package:new_chat_app/modals/chat_Modal.dart';
 import 'package:new_chat_app/modals/user_Modal.dart';
 import 'package:new_chat_app/utils/colors.util.dart';
 import 'package:new_chat_app/utils/routes_utils.dart';
+import 'package:new_chat_app/views/components/time_component.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // User? user = ModalRoute.of(context)!.settings.arguments as User;
-
     User? user = AuthHelper.authHelper.firebaseAuth.currentUser!;
 
     return Scaffold(
@@ -31,6 +30,7 @@ class HomePage extends StatelessWidget {
         ),
         centerTitle: true,
         backgroundColor: MyColor.color1,
+        foregroundColor: MyColor.color3,
       ),
       drawer: Drawer(
         child: StreamBuilder(
@@ -131,6 +131,7 @@ class HomePage extends StatelessWidget {
                                     }
 
                                     return Card(
+                                      elevation: 16,
                                       child: ListTile(
                                         onTap: () {
                                           Navigator.pushNamed(
@@ -192,7 +193,11 @@ class HomePage extends StatelessWidget {
                                                 );
                                               } else {
                                                 return const Text(
-                                                    "Click here to start chat..");
+                                                  "Click here to start chat..",
+                                                  style: TextStyle(
+                                                    color: Colors.black54,
+                                                  ),
+                                                );
                                               }
                                             } else {
                                               return const Text("");
@@ -204,68 +209,111 @@ class HomePage extends StatelessWidget {
                                             userModal.profilePic,
                                           ),
                                         ),
-                                        trailing: SizedBox(
-                                          height: 24,
-                                          width: 24,
-                                          child: StreamBuilder(
-                                            stream: FireStoreHelper
-                                                .fireStoreHelper
-                                                .getunseenCount(
-                                                    senderEmail:
-                                                        user.email.toString(),
-                                                    receiverEmail:
-                                                        userModal.email),
-                                            builder: (context, snapshot4) {
-                                              if (snapshot4.hasData) {
-                                                DocumentSnapshot<
-                                                        Map<String, dynamic>>?
-                                                    document = snapshot4.data;
+                                        trailing: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            StreamBuilder(
+                                                stream: FireStoreHelper
+                                                    .fireStoreHelper
+                                                    .getLastMsg(
+                                                  senderEmail:
+                                                      user.email.toString(),
+                                                  receiverEmail:
+                                                      userModal.email,
+                                                ),
+                                                builder: (context, snapshot5) {
+                                                  if (snapshot5.hasData) {
+                                                    DocumentSnapshot<
+                                                            Map<String,
+                                                                dynamic>>?
+                                                        data = snapshot5.data;
 
-                                                Map<String, dynamic>? data1 =
-                                                    document!.data();
+                                                    Map<String, dynamic>?
+                                                        data2 = data!.data();
 
-                                                if (data1 != null) {
-                                                  return (data1["value"] == 0)
-                                                      ? Container()
-                                                      : Container(
-                                                          height: 24,
-                                                          width: 24,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                                  color:
-                                                                      MyColor
-                                                                          .color1,
+                                                    if (data2 != null) {
+                                                      ChatModal chat =
+                                                          ChatModal.fromMap(
+                                                        data: data2,
+                                                      );
+
+                                                      return homeTimeWidget(
+                                                          time: chat.time,
+                                                          type: chat.type);
+                                                    }
+                                                  }
+                                                  return Container();
+                                                }),
+                                            const Gap(4),
+                                            SizedBox(
+                                              height: 24,
+                                              width: 24,
+                                              child: StreamBuilder(
+                                                stream: FireStoreHelper
+                                                    .fireStoreHelper
+                                                    .getunseenCount(
+                                                        senderEmail: user.email
+                                                            .toString(),
+                                                        receiverEmail:
+                                                            userModal.email),
+                                                builder: (context, snapshot4) {
+                                                  if (snapshot4.hasData) {
+                                                    DocumentSnapshot<
+                                                            Map<String,
+                                                                dynamic>>?
+                                                        document =
+                                                        snapshot4.data;
+
+                                                    Map<String, dynamic>?
+                                                        data1 =
+                                                        document!.data();
+
+                                                    if (data1 != null) {
+                                                      return (data1["value"] ==
+                                                              0)
+                                                          ? Container()
+                                                          : Container(
+                                                              height: 24,
+                                                              width: 24,
+                                                              decoration: BoxDecoration(
+                                                                  color: MyColor
+                                                                      .color1,
                                                                   shape: BoxShape
                                                                       .circle),
-                                                          alignment:
-                                                              Alignment.center,
-                                                          child: Text(
-                                                            data1["value"]
-                                                                .toString(),
-                                                            style: TextStyle(
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color: MyColor
-                                                                  .color3,
-                                                            ),
-                                                          ),
-                                                        );
-                                                } else {
-                                                  return Container();
-                                                }
-                                              } else {
-                                                return const Center();
-                                              }
-                                            },
-                                          ),
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                              child: Text(
+                                                                data1["value"]
+                                                                    .toString(),
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: MyColor
+                                                                      .color3,
+                                                                ),
+                                                              ),
+                                                            );
+                                                    } else {
+                                                      return Container();
+                                                    }
+                                                  } else {
+                                                    return const Center();
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     );
                                   } else {
-                                    return const Center(
-                                      child: CircularProgressIndicator(),
+                                    return Center(
+                                      child: Container(),
                                     );
                                   }
                                 },
@@ -339,9 +387,10 @@ class HomePage extends StatelessWidget {
                       child: Text(
                         "Select Contact",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: MyColor.color2),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: MyColor.color2,
+                        ),
                       ),
                     ),
                     const Gap(12),
@@ -396,7 +445,13 @@ class HomePage extends StatelessWidget {
                                             foregroundImage: NetworkImage(
                                                 tempUser.profilePic),
                                           ),
-                                          trailing: const Icon(Icons.add),
+                                          trailing: IconButton.filledTonal(
+                                            color: MyColor.color1,
+                                            onPressed: () {},
+                                            icon: const Icon(
+                                              Icons.add,
+                                            ),
+                                          ),
                                         ),
                                       );
                                     },

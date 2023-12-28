@@ -4,11 +4,12 @@ class ChatModal {
   String type;
   String status;
 
-  ChatModal(
-      {required this.msg,
-      required this.time,
-      required this.type,
-      required this.status});
+  ChatModal({
+    required this.msg,
+    required this.time,
+    required this.type,
+    required this.status,
+  });
 
   factory ChatModal.fromMap({required Map data}) {
     return ChatModal(

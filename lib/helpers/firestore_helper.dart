@@ -18,7 +18,7 @@ class FireStoreHelper {
       userName: user.displayName ?? "NULL",
       Uid: user.uid,
       profilePic: user.photoURL ??
-          "https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg",
+          "https://www.shutterstock.com/image-vector/vector-design-avatar-dummy-sign-600nw-1290556063.jpg",
     );
 
     DocumentSnapshot<Map<String, dynamic>> userData =
@@ -104,7 +104,7 @@ class FireStoreHelper {
 
     chat.update("type", (value) => "sent");
 
-    firestore
+    await firestore
         .collection(usersCollection)
         .doc(senderEmail)
         .collection(receiverEmail)
@@ -115,7 +115,7 @@ class FireStoreHelper {
 
     chat.update("type", (value) => "receive");
 
-    firestore
+    await firestore
         .collection(usersCollection)
         .doc(receiverEmail)
         .collection(senderEmail)
@@ -124,7 +124,7 @@ class FireStoreHelper {
         .doc(chatModal.time.millisecondsSinceEpoch.toString())
         .set(chat);
 
-    unseenMsgCount(
+    await unseenMsgCount(
       senderEmail: senderEmail,
       receiverEmail: receiverEmail,
     );
