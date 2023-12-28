@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:new_chat_app/controller/themeController.dart';
 import 'package:new_chat_app/helpers/auth_helper.dart';
 import 'package:new_chat_app/helpers/firestore_helper.dart';
 import 'package:new_chat_app/modals/chat_Modal.dart';
@@ -17,6 +19,8 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     User? user = AuthHelper.authHelper.firebaseAuth.currentUser!;
+
+    ThemeController themeController = Get.find();
 
     return Scaffold(
       appBar: AppBar(
@@ -64,6 +68,29 @@ class HomePage extends StatelessWidget {
                         foregroundImage: NetworkImage(
                           userData?["profilePic"] ?? "",
                         ),
+                      ),
+                    ),
+                  ),
+                  Obx(
+                    () => ElevatedButton.icon(
+                      onPressed: () {
+                        themeController.changeTheme();
+
+                        debugPrint(themeController.isDark.value.toString());
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: MyColor.color1,
+                        foregroundColor: MyColor.color3,
+                      ),
+                      icon: Icon(
+                        themeController.isDark.value
+                            ? Icons.light_mode
+                            : Icons.dark_mode_outlined,
+                      ),
+                      label: Text(
+                        themeController.isDark.value
+                            ? "Light Theme"
+                            : "Dark Theme",
                       ),
                     ),
                   ),

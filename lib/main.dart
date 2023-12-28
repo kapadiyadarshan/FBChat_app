@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:new_chat_app/controller/themeController.dart';
 import 'package:new_chat_app/helpers/auth_helper.dart';
 import 'package:new_chat_app/utils/colors.util.dart';
 import 'package:new_chat_app/utils/routes_utils.dart';
@@ -28,27 +30,35 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: MyColor.color1,
-          // ···
-          brightness: Brightness.light,
+    ThemeController themeController = Get.put(ThemeController());
+
+    return Obx(
+      () => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: MyColor.color1,
+            brightness: Brightness.light,
+          ),
         ),
+        darkTheme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: MyColor.color1,
+            brightness: Brightness.dark,
+          ),
+        ),
+        themeMode:
+            themeController.isDark.value ? ThemeMode.dark : ThemeMode.light,
+        initialRoute: MyRoute.SplashScreen,
+        routes: {
+          MyRoute.SplashScreen: (context) => const SplashScreen(),
+          MyRoute.LoginPage: (context) => LoginPage(),
+          MyRoute.SignUpPage: (context) => SignUpPage(),
+          MyRoute.HomePage: (context) => const HomePage(),
+          MyRoute.profilePage: (context) => const ProfilePage(),
+          MyRoute.chatPage: (context) => const ChatPage(),
+        },
       ),
-      // initialRoute: (AuthHelper.authHelper.firebaseAuth.currentUser == null)
-      //     ? MyRoute.LoginPage
-      //     : MyRoute.HomePage,
-      initialRoute: MyRoute.SplashScreen,
-      routes: {
-        MyRoute.SplashScreen: (context) => const SplashScreen(),
-        MyRoute.LoginPage: (context) => LoginPage(),
-        MyRoute.SignUpPage: (context) => SignUpPage(),
-        MyRoute.HomePage: (context) => const HomePage(),
-        MyRoute.profilePage: (context) => const ProfilePage(),
-        MyRoute.chatPage: (context) => const ChatPage(),
-      },
     );
   }
 }

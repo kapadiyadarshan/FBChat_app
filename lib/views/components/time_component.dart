@@ -27,7 +27,6 @@ Widget homeTimeWidget({required DateTime time, required String type}) {
     date,
     style: const TextStyle(
       fontSize: 10,
-      color: Colors.black,
     ),
   );
 }
