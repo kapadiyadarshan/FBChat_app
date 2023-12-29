@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:new_chat_app/modals/user_Modal.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthHelper {

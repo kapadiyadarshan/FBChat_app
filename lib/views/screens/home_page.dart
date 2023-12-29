@@ -158,7 +158,7 @@ class HomePage extends StatelessWidget {
                                     }
 
                                     return Card(
-                                      elevation: 16,
+                                      elevation: 3,
                                       child: ListTile(
                                         onTap: () {
                                           Navigator.pushNamed(

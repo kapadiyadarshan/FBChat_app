@@ -54,9 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   WavyAnimatedText("SociaBay"),
                 ],
                 isRepeatingAnimation: false,
-                onTap: () {
-                  print("Tap Event");
-                },
+                onTap: () {},
               ),
             ),
           ),

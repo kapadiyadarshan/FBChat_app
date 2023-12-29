@@ -1,10 +1,8 @@
-import 'dart:math';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:new_chat_app/modals/user_Modal.dart';
+
 import 'package:new_chat_app/utils/colors.util.dart';
 import 'package:new_chat_app/utils/routes_utils.dart';
 

@@ -1,5 +1,3 @@
-import 'chat_Modal.dart';
-
 class UserModal {
   String Uid;
   String email;

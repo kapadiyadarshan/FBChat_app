@@ -4,7 +4,6 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:new_chat_app/helpers/auth_helper.dart';
 import 'package:new_chat_app/helpers/firestore_helper.dart';
-import 'package:new_chat_app/modals/user_Modal.dart';
 import 'package:new_chat_app/utils/routes_utils.dart';
 
 import '../../utils/colors.util.dart';
